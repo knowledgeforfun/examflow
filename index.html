@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EXAMFLOW — Examination Studio</title>
+<meta name="description" content="EXAMFLOW frontend prototype for PDF review, question creation and online quizzes.">
+<style>
+:root{--ink:#172033;--muted:#687386;--line:#e6eaf0;--paper:#fff;--bg:#f5f6f8;--navy:#101827;--blue:#315efb;--blue2:#eaf0ff;--green:#067647;--amber:#9a3412}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:238px;background:var(--navy);color:#fff;padding:25px 17px;display:flex;flex-direction:column;z-index:4}
+.brand{font-weight:850;letter-spacing:1.5px;font-size:23px;padding:0 12px}.brand span{color:#91aaff}.tagline{color:#9aa7ba;font-size:10px;letter-spacing:1.4px;padding:6px 12px 28px}
+.navlabel{color:#728097;font-size:10px;letter-spacing:1.4px;padding:12px}.nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;color:#c6cfdd;background:transparent;border:0;border-radius:9px;padding:12px;margin:2px 0}.nav button.active,.nav button:hover{background:#202d42;color:#fff}.nav .ico{width:19px;text-align:center}.sidebottom{margin-top:auto;border-top:1px solid #2b3749;padding:16px 10px;color:#93a0b3;font-size:11px;line-height:1.7}
+.main{margin-left:238px;max-width:1600px;padding:27px 34px 60px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:25px}.eyebrow{font-size:11px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase}.heading{font-size:27px;letter-spacing:-.7px;margin:5px 0 0}.profile{display:flex;align-items:center;gap:10px}.avatar{width:36px;height:36px;border-radius:50%;background:#e8edff;color:#2949bd;display:grid;place-items:center;font-weight:800}.profile small{display:block;color:var(--muted)}
+.page{display:none}.page.active{display:block}.card{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:22px;margin-bottom:17px}.card h2{font-size:17px;margin:0 0 6px}.muted{color:var(--muted);line-height:1.65}.small{font-size:12px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:17px}.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px}.stat label{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:25px;margin-top:8px;letter-spacing:-.5px}
+.btn{border:0;background:var(--blue);color:#fff;border-radius:8px;padding:11px 15px;font-weight:700}.btn:hover{filter:brightness(.96)}.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.ghost{background:transparent;color:var(--blue);padding:8px}.btn:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.split{display:grid;grid-template-columns:1.2fr .8fr;gap:17px}.drop{border:1.5px dashed #c6cedb;background:#fafbfc;border-radius:11px;padding:35px 18px;text-align:center;margin:18px 0}.drop input{max-width:100%;margin-top:15px}.pill{display:inline-flex;align-items:center;padding:5px 9px;border-radius:99px;background:#eef2ff;color:#394db5;font-size:11px;font-weight:700}.pill.amber{background:#fff4e5;color:#9a4c0b}.pill.green{background:#e8f7ef;color:#067647}
+.field{display:flex;flex-direction:column;gap:6px;margin:11px 0}.field label{font-size:12px;color:#475467;font-weight:700}.field input,.field select,.field textarea{border:1px solid #d9dfe8;border-radius:8px;padding:10px 11px;background:#fff;color:var(--ink);width:100%}.field textarea{min-height:84px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tabrow{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}.tab{border:1px solid var(--line);background:#fff;padding:9px 12px;border-radius:8px}.tab.active{background:var(--blue2);border-color:#c9d5ff;color:#2949bd}
+.pagegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.pdfpage{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}.pdfpage canvas{width:100%;height:auto;border:1px solid #edf0f4;border-radius:5px}.pdfpage b{display:block;font-size:12px;margin-bottom:8px}.question{border:1px solid var(--line);border-radius:11px;padding:16px;margin:10px 0}.question p{line-height:1.6}.option{border:1px solid var(--line);padding:9px 11px;border-radius:8px;margin:7px 0}.notice{padding:12px 14px;border-radius:9px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;line-height:1.55;font-size:12px}.success{padding:12px 14px;border-radius:9px;background:#ecfdf3;border:1px solid #abefc6;color:#067647;font-size:12px}
+.quizwrap{max-width:780px;margin:auto}.quizoption{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);padding:13px;border-radius:9px;margin:8px 0}.quizoption.selected{border-color:var(--blue);background:#eef2ff}.quizoption.correct{border-color:#12a05c;background:#ecfdf3}.quizoption.wrong{border-color:#dc5b50;background:#fff1f0}.hide{display:none!important}
+footer{color:#9aa3b2;font-size:11px;text-align:center;padding:20px}
+@media(max-width:900px){.sidebar{width:68px;padding:20px 8px}.brand{font-size:0;padding:0 9px}.brand:after{content:"EF";font-size:19px}.tagline,.navlabel,.nav button .txt,.sidebottom{display:none}.nav button{justify-content:center;padding:13px 5px}.nav .ico{font-size:18px}.main{margin-left:68px;padding:22px 18px}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.main{padding:16px 12px}.heading{font-size:22px}.split,.two{grid-template-columns:1fr}.topbar{align-items:flex-start}.profile .meta{display:none}.card{padding:16px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand">EXAM<span>FLOW</span></div><div class="tagline">EXAMINATION STUDIO</div>
+ <div class="navlabel">WORKSPACE</div>
+ <nav class="nav">
+  <button class="active" data-page="dashboard"><span class="ico">▦</span><span class="txt">Overview</span></button>
+  <button data-page="upload"><span class="ico">⇧</span><span class="txt">PDF Review</span></button>
+  <button data-page="bank"><span class="ico">▤</span><span class="txt">Question Bank</span></button>
+  <button data-page="builder"><span class="ico">＋</span><span class="txt">Quiz Builder</span></button>
+  <button data-page="results"><span class="ico">◷</span><span class="txt">Demo Results</span></button>
+ </nav>
+ <div class="sidebottom">FRONTEND-ONLY PROTOTYPE<br>GitHub Pages edition · v0.6<br>Demo data stays in this browser.</div>
+</aside>
+<main class="main">
+ <header class="topbar"><div><div class="eyebrow" id="crumb">WORKSPACE / OVERVIEW</div><h1 class="heading" id="pagetitle">Overview</h1></div>
+ <div class="profile"><div class="avatar">P</div><div class="meta"><b id="roleLabel">Demo Teacher</b><small>Prototype workspace</small></div><select id="roleSwitch" aria-label="Demo role"><option value="teacher">Public Teacher</option><option value="institute">Institute Admin</option><option value="student">Student Preview</option></select></div></header>
+
+ <section class="page active" id="page-dashboard">
+  <div class="stats">
+   <div class="stat"><label>PDF uploads this session</label><strong id="statUploads">0</strong></div>
+   <div class="stat"><label>Questions in demo bank</label><strong id="statQuestions">0</strong></div>
+   <div class="stat"><label>Quizzes created</label><strong id="statQuizzes">0</strong></div>
+   <div class="stat"><label>Student attempts</label><strong id="statAttempts">0</strong></div>
+  </div>
+  <div class="split">
+   <div class="card"><h2>Build an examination, faster.</h2><p class="muted">Upload a paper, inspect its pages, add verified questions and create a shareable quiz demonstration.</p><div class="row"><button class="btn" onclick="go('upload')">Upload question paper</button><button class="btn secondary" onclick="go('builder')">Create a quiz</button></div></div>
+   <div class="card"><h2>Workspace mode</h2><p class="muted">Switch between public teacher, institute admin and student preview to demonstrate the intended experience.</p><span class="pill green">Demo mode</span><p class="muted small">Role switching is simulated locally. No real accounts or permissions are created.</p></div>
+  </div>
+  <div class="card"><h2>Recent activity</h2><div id="activity" class="muted">No activity yet. Upload a PDF or create a question to begin.</div></div>
+  <div class="notice"><b>Prototype boundary:</b> GitHub Pages hosts static files only. This demo does not provide real authentication, cloud database, OCR, secure answer checking or persistent cross-device sharing.</div>
+ </section>
+
+ <section class="page" id="page-upload">
+  <div class="card"><h2>Upload customer question paper</h2><p class="muted">PDF pages are rendered directly in your browser. Selectable text can be extracted using PDF.js. Scanned pages are preserved as page previews; this static prototype does not run OCR.</p>
+   <div class="drop"><div style="font-size:30px">⇧</div><b>Choose a PDF to preview</b><div class="muted small">No upload to a server. File remains in this browser session.</div><input type="file" id="pdfFile" accept="application/pdf"></div>
+   <div class="row"><button class="btn" id="renderPdf" disabled>Preview PDF pages</button><button class="btn secondary" id="runOcr" disabled>Run OCR</button><button class="btn secondary" id="clearPdf">Clear</button></div>
+   <div class="two">
+    <div class="field"><label>OCR language</label><select id="ocrLang"><option value="eng">English</option><option value="eng+hin">English + Hindi</option><option value="eng+guj">English + Gujarati</option></select></div>
+    <div class="field"><label>Browser AI model</label><select id="aiModel"><option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Qwen 2.5 · 0.5B (small)</option></select></div>
+   </div>
+   <div class="row"><button class="btn secondary" id="loadAi">Load browser AI model</button><span class="muted small" id="aiStatus">AI not loaded · WebGPU required</span></div>
+   <div class="muted small" id="ocrProgress">OCR has not started.</div>
+   <div class="notice">OCR and AI run on this device in your browser. First use downloads language data/model files and can take time. Device memory, browser support and language accuracy vary.</div><p class="muted small" id="pdfStatus">Choose a PDF file to start.</p>
+   <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="stat">PDF pages<strong id="pdfPageCount">—</strong></div><div class="stat">Extracted text chars<strong id="textChars">—</strong></div></div>
+   <div class="tabrow"><button class="tab active" data-pdftab="pages">Original pages</button><button class="tab" data-pdftab="text">Selectable text</button></div>
+   <div id="pdfPages" class="pagegrid"></div><pre id="pdfText" class="hide" style="white-space:pre-wrap;max-height:440px;overflow:auto;background:#f8fafc;padding:14px;border-radius:9px"></pre>
+   <div class="row" style="justify-content:space-between;margin-top:18px"><h2>Detected MCQs · Teacher review</h2><div class="row"><button class="btn secondary" id="aiStructure" disabled>AI structure OCR text</button><button class="btn" id="addDetected" disabled>Add approved questions to bank</button></div></div>
+   <div id="detectedQuestions"><p class="muted">Run OCR or extract selectable text to detect candidate questions.</p></div>
+  </div>
+  <div class="notice">For your EM GM Physics and Chemistry samples: page preview will work without Tesseract. Since they are scanned pages, text extraction may be empty. OCR and automatic MCQ recognition are not included in this GitHub Pages-only build.</div>
+ </section>
+
+ <section class="page" id="page-bank">
+  <div class="card"><div class="row" style="justify-content:space-between"><div><h2>Question Bank</h2><p class="muted small">Questions manually entered or imported from this browser's demo data.</p></div><button class="btn" onclick="go('builder')">＋ Add question</button></div><div id="bankList"><p class="muted">No questions yet.</p></div></div>
+ </section>
+
+ <section class="page" id="page-builder">
+  <div class="split">
+   <div class="card"><h2>Question editor</h2><p class="muted small">Enter and verify the question manually. You can attach a page reference from your PDF review.</p>
+    <div class="field"><label>Question</label><textarea id="qText" placeholder="Type the complete question..."></textarea></div>
+    <div class="two"><div class="field"><label>Class / Exam</label><input id="qClass" placeholder="e.g. NEET / Class 12"></div><div class="field"><label>Subject</label><input id="qSubject" placeholder="e.g. Physics"></div></div>
+    <div class="field"><label>Options</label><input id="optA" placeholder="Option A"><input id="optB" placeholder="Option B"><input id="optC" placeholder="Option C"><input id="optD" placeholder="Option D"></div>
+    <div class="two"><div class="field"><label>Correct answer</label><select id="correct"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div><div class="field"><label>Difficulty</label><select id="difficulty"><option>Medium</option><option>Easy</option><option>Hard</option></select></div></div>
+    <div class="field"><label>Explanation (optional)</label><textarea id="explanation" placeholder="Add a verified solution..."></textarea></div>
+    <button class="btn" id="saveQuestion">Save verified question</button>
+   </div>
+   <div class="card"><h2>Quiz setup</h2><div class="field"><label>Quiz title</label><input id="quizTitle" value="NEET Practice Test"></div><div class="field"><label>Instructions</label><textarea id="quizInstructions">Choose one answer for each question. Your selection will lock after submission.</textarea></div><div class="field"><label>Question order</label><select id="shuffle"><option value="yes">Randomize questions</option><option value="no">Keep original order</option></select></div><p class="muted small">Add questions to the bank, then create a shareable demo link. For a real exam, answers must be checked on a secure server.</p><button class="btn secondary" id="makeQuiz">Generate student demo link</button><div id="shareResult" class="hide" style="margin-top:14px"><div class="success">Demo quiz link created.</div><div class="field"><label>Share URL</label><input id="shareUrl" readonly></div><button class="btn" id="copyLink">Copy link</button></div></div>
+  </div>
+ </section>
+
+ <section class="page" id="page-results">
+  <div class="card"><h2>Demo results</h2><p class="muted">This section displays attempts made in this browser only. It is not a centralized student analytics system.</p><div id="resultList" class="muted">No student attempts yet.</div></div>
+ </section>
+
+ <section class="page" id="page-student">
+  <div class="quizwrap card"><div class="eyebrow">STUDENT EXAMINATION PREVIEW</div><h2 id="studentTitle">Quiz</h2><p class="muted" id="studentInstructions"></p><div class="row" style="justify-content:space-between"><span class="pill" id="qProgress">Question 1</span><span class="muted small" id="qCount"></span></div><div id="studentQuestion"></div><div class="row" style="justify-content:space-between;margin-top:18px"><button class="btn secondary" id="exitQuiz">Exit preview</button><button class="btn" id="nextQuestion" disabled>Next question</button></div><div id="finalScore" class="success hide"></div></div>
+ </section>
+ <footer>EXAMFLOW · Static prototype for evaluation · Not for conducting secure examinations</footer>
+</main></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const state={questions:[],quizzes:[],attempts:[],uploads:0,activeQuiz:null,qi:0,answers:[],locked:false,pdf:null,pageCanvases:[],rawText:'',detected:[],aiEngine:null,ocrWorker:null};
+const labels={dashboard:"Overview",upload:"PDF Review",bank:"Question Bank",builder:"Quiz Builder",results:"Demo Results",student:"Student Preview"};
+function go(page){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+page).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('pagetitle').textContent=labels[page]||"Student Preview";$('crumb').textContent="WORKSPACE / "+(labels[page]||"STUDENT PREVIEW").toUpperCase();if(page==='bank')renderBank();if(page==='results')renderResults();}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+$('roleSwitch').onchange=()=>{$('roleLabel').textContent={teacher:"Public Teacher",institute:"Institute Admin",student:"Student Preview"}[$('roleSwitch').value];if($('roleSwitch').value==='student')go('student');};
+function updateStats(){ $('statUploads').textContent=state.uploads;$('statQuestions').textContent=state.questions.length;$('statQuizzes').textContent=state.quizzes.length;$('statAttempts').textContent=state.attempts.length;}
+function activity(s){$('activity').textContent=s;}
+function renderBank(){const root=$('bankList');root.innerHTML='';if(!state.questions.length){root.innerHTML='<p class="muted">No questions yet. Add one in Quiz Builder.</p>';return;}state.questions.forEach((q,i)=>{const d=document.createElement('div');d.className='question';d.innerHTML=`<div class="row"><span class="pill">${escapeHtml(q.subject||'General')}</span><span class="pill amber">${escapeHtml(q.difficulty)}</span><span class="muted small">Q${i+1}</span></div>`;const p=document.createElement('p');p.textContent=q.text;d.append(p);q.options.forEach((o,j)=>{const x=document.createElement('div');x.className='option';x.textContent=String.fromCharCode(65+j)+'. '+o;d.append(x)});const meta=document.createElement('div');meta.className='muted small';meta.textContent=q.correct===null?'Answer key not verified — do not publish this question yet.':'Correct answer: '+String.fromCharCode(65+q.correct)+' · Teacher verified in demo';d.append(meta);root.append(d);});}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+$('saveQuestion').onclick=()=>{const text=$('qText').value.trim(),options=['optA','optB','optC','optD'].map(x=>$(x).value.trim());if(!text||options.some(x=>!x)){alert('Please enter the question and all four options.');return;}state.questions.push({text,options,correct:+$('correct').value,explanation:$('explanation').value.trim(),subject:$('qSubject').value.trim(),exam:$('qClass').value.trim(),difficulty:$('difficulty').value});updateStats();activity('Added a verified demo question: '+text.slice(0,75));renderBank();$('qText').value='';['optA','optB','optC','optD','explanation'].forEach(x=>$(x).value='');};
+function base64url(obj){const bytes=new TextEncoder().encode(JSON.stringify(obj));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function fromBase64url(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const bin=atob(s),bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return JSON.parse(new TextDecoder().decode(bytes));}
+$('makeQuiz').onclick=()=>{if(!state.questions.length){alert('Add at least one question first.');return;}if(state.questions.some(q=>q.correct===null||q.correct===undefined)){alert('Some imported questions have no verified answer key. Verify their answers before creating a quiz.');return;}let qs=[...state.questions];if($('shuffle').value==='yes')qs.sort(()=>Math.random()-.5);const payload={v:1,title:$('quizTitle').value||'Practice Quiz',instructions:$('quizInstructions').value,questions:qs};const url=location.href.split('#')[0]+'#quiz='+base64url(payload);state.quizzes.push({title:payload.title,url,created:new Date().toLocaleString()});updateStats();$('shareUrl').value=url;$('shareResult').classList.remove('hide');activity('Generated a student demo link for '+payload.title);};
+$('copyLink').onclick=async()=>{try{await navigator.clipboard.writeText($('shareUrl').value);$('copyLink').textContent='Copied';}catch(e){$('shareUrl').select();document.execCommand('copy');$('copyLink').textContent='Copied';}};
+$('pdfFile').onchange=()=>{$('renderPdf').disabled=!$('pdfFile').files.length;};
+$('clearPdf').onclick=()=>{state.pdf=null;state.pageCanvases=[];state.rawText='';state.detected=[];$('addDetected').disabled=true;$('aiStructure').disabled=true;$('pdfFile').value='';$('pdfPages').innerHTML='';$('pdfText').textContent='';$('pdfPageCount').textContent='—';$('textChars').textContent='—';$('pdfStatus').textContent='Choose a PDF file to start.';$('renderPdf').disabled=true;};
+document.querySelectorAll('[data-pdftab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-pdftab]').forEach(x=>x.classList.toggle('active',x===b));$('pdfPages').classList.toggle('hide',b.dataset.pdftab!=='pages');$('pdfText').classList.toggle('hide',b.dataset.pdftab!=='text');});
+if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}
+$('renderPdf').onclick=async()=>{const file=$('pdfFile').files[0];if(!file)return;if(!window.pdfjsLib){$('pdfStatus').textContent='PDF.js library could not load. Check internet connection and refresh.';return;}$('renderPdf').disabled=true;$('runOcr').disabled=true;$('pdfStatus').textContent='Opening PDF and rendering pages in your browser…';try{const data=new Uint8Array(await file.arrayBuffer());const pdf=await pdfjsLib.getDocument({data}).promise;state.pdf=pdf;state.pageCanvases=[];$('pdfPageCount').textContent=pdf.numPages;state.uploads++;updateStats();$('pdfPages').innerHTML='';let allText='';for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const viewport=page.getViewport({scale:1.35});const canvas=document.createElement('canvas');const ctx=canvas.getContext('2d');canvas.width=viewport.width;canvas.height=viewport.height;await page.render({canvasContext:ctx,viewport}).promise;state.pageCanvases.push(canvas);const wrap=document.createElement('div');wrap.className='pdfpage';const label=document.createElement('b');label.textContent='Page '+n;wrap.append(label,canvas);$('pdfPages').append(wrap);const tc=await page.getTextContent();const pageText=tc.items.map(x=>x.str).join(' ');allText+='\n\n--- PAGE '+n+' ---\n'+pageText;}state.rawText=allText.trim();$('pdfText').textContent=state.rawText||'No selectable text found. Run OCR to read scanned pages.';$('textChars').textContent=state.rawText.length;$('runOcr').disabled=false;$('pdfStatus').textContent=file.name+' · '+pdf.numPages+' pages rendered locally in browser.';activity('Previewed '+file.name+' ('+pdf.numPages+' pages)');if(state.rawText.length>100){$('aiStructure').disabled=false;showDetected(state.rawText);$('ocrProgress').textContent='Selectable text found. Candidate MCQ extraction is ready; OCR is optional.';}else{$('ocrProgress').textContent='No usable selectable text found. Run OCR for scanned pages.';}}catch(e){$('pdfStatus').textContent='PDF preview error: '+e.message;}finally{$('renderPdf').disabled=false;}};
+function parseCandidates(text){
+ const lines=text.replace(/\r/g,'\n').split('\n').map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);
+ const qs=[];let cur=null;
+ const qStart=/^(?:Q(?:uestion)?\s*)?\d{1,3}\s*[\).:-]\s+|^(?:प्रश्न|સવાલ)\s*\d+/i;
+ const opt=/^\s*(?:\(([A-Da-d])\)|([A-Da-d])[\).:-])\s*(.+)$/;
+ const flush=()=>{if(cur){if(cur.options.length>=2)qs.push(cur);cur=null;}};
+ for(const line of lines){
+   if(qStart.test(line)){flush();cur={text:line.replace(qStart,'').trim(),options:[]};continue;}
+   const m=line.match(opt);
+   if(m&&cur){cur.options.push({label:(m[3]||'').trim(),key:(m[1]||m[2]).toUpperCase()});continue;}
+   if(cur&&cur.options.length===0)cur.text+=' '+line;
+   else if(cur&&cur.options.length>0&&cur.options.length<4)cur.options[cur.options.length-1].label+=' '+line;
+ }
+ flush();
+ return qs.filter(q=>q.text.length>5&&q.options.length>=2).map(q=>({...q,options:q.options.slice(0,4),correct:null,explanation:'',approved:false}));
+}
+function showDetected(text,preserve=false){
+ if(!preserve){state.rawText=text;state.detected=parseCandidates(text);}const root=$('detectedQuestions');root.innerHTML='';
+ if(!state.detected.length){root.innerHTML='<div class="notice">No MCQs confidently detected. Check OCR text below, or add questions manually. The parser will not invent missing options or answers.</div>'; $('addDetected').disabled=true;return;}
+ state.detected.forEach((q,i)=>{const box=document.createElement('div');box.className='question';const title=document.createElement('div');title.className='row';title.innerHTML='<span class="pill">Candidate Q'+(i+1)+'</span><span class="pill amber">Needs verification</span>';box.append(title);
+ const qt=document.createElement('textarea');qt.value=q.text;qt.className='field';qt.style.width='100%';qt.style.minHeight='65px';box.append(qt);
+ q.options.forEach((o,j)=>{const inp=document.createElement('input');inp.value=o.label;inp.placeholder='Option '+String.fromCharCode(65+j);inp.style.width='100%';inp.style.margin='4px 0';inp.oninput=()=>o.label=inp.value;box.append(inp);});
+ const row=document.createElement('div');row.className='two';
+ const answer=document.createElement('select');answer.innerHTML='<option value="">Answer key not detected</option>'+q.options.map((o,j)=>`<option value="${j}">${String.fromCharCode(65+j)}</option>`).join('');answer.value=q.correct===null?'':String(q.correct);answer.onchange=()=>q.correct=answer.value===''?null:+answer.value;
+ const subject=document.createElement('input');subject.placeholder='Subject (e.g. Physics)';subject.value='';subject.oninput=()=>q.subject=subject.value;
+ row.append(answer,subject);box.append(row);const exp=document.createElement('textarea');exp.placeholder='Verified solution / explanation (optional)';exp.style.width='100%';exp.style.marginTop='8px';exp.oninput=()=>q.explanation=exp.value;box.append(exp);
+ const approve=document.createElement('label');approve.style.display='block';approve.style.marginTop='10px';approve.innerHTML='<input type="checkbox"> I checked this question and its options';approve.querySelector('input').onchange=e=>q.approved=e.target.checked;box.append(approve);qt.oninput=()=>q.text=qt.value;root.append(box);
+ });
+ $('addDetected').disabled=false;
+}
+$('runOcr').onclick=async()=>{
+ if(!state.pageCanvases.length)return;
+ if(!window.Tesseract){$('ocrProgress').textContent='Tesseract.js failed to load. Refresh with an internet connection.';return;}
+ $('runOcr').disabled=true;$('ocrProgress').textContent='Starting browser OCR… language data may need to download.';
+ try{
+  const lang=$('ocrLang').value;
+  const worker=await Tesseract.createWorker(lang,1,{logger:m=>{if(m.status)$('ocrProgress').textContent=m.status+(m.progress?' · '+Math.round(m.progress*100)+'%':'');}});
+  state.ocrWorker=worker;let result='';
+  for(let i=0;i<state.pageCanvases.length;i++){
+   $('ocrProgress').textContent='OCR page '+(i+1)+' / '+state.pageCanvases.length;
+   const {data}=await worker.recognize(state.pageCanvases[i]);
+   result+='\n\n--- PAGE '+(i+1)+' ---\n'+data.text;
+  }
+  await worker.terminate();state.ocrWorker=null;
+  const combined=(state.rawText&&state.rawText.length>100?state.rawText+'\n\n--- OCR TEXT ---\n':'')+result;
+  $('pdfText').textContent=combined;$('textChars').textContent=combined.length;
+  $('aiStructure').disabled=false;showDetected(result);$('ocrProgress').textContent='OCR complete. Review every detected question and answer before approval.';
+ }catch(e){$('ocrProgress').textContent='OCR error: '+e.message+' · Check browser memory and language data download.';}
+ finally{$('runOcr').disabled=false;}
+};
+$('addDetected').onclick=()=>{
+ const ready=state.detected.filter(q=>q.approved&&q.text&&q.options.length===4&&q.options.every(o=>o.label.trim()));
+ if(!ready.length){alert('Approve at least one question after checking its wording and options.');return;}
+ ready.forEach(q=>state.questions.push({text:q.text,options:q.options.map(o=>o.label),correct:q.correct,explanation:q.explanation||'',subject:q.subject||'Imported PDF',exam:'PDF import',difficulty:'Medium',needsAnswerReview:q.correct===null}));
+ updateStats();renderBank();activity('Added '+ready.length+' teacher-approved candidate questions from PDF.');alert(ready.length+' question(s) added. Please verify answer keys before using in a quiz.');
+};
+$('loadAi').onclick=async()=>{
+ if(!('gpu' in navigator)){ $('aiStatus').textContent='WebGPU is not available in this browser/device. OCR and manual review remain available.';return;}
+ $('loadAi').disabled=true;$('aiStatus').textContent='Downloading browser AI model. This may take several minutes and several hundred MB.';
+ try{
+  const mod=await import('https://esm.run/@mlc-ai/web-llm');
+  state.aiEngine=await mod.CreateMLCEngine($('aiModel').value,{initProgressCallback:p=>$('aiStatus').textContent=p.text||'Loading AI model…'});
+  $('aiStatus').textContent='Browser AI model loaded. Ready to structure OCR text.';
+ }catch(e){$('aiStatus').textContent='AI model could not load: '+e.message+' · Browser AI is optional; use OCR + teacher review.';}
+ finally{$('loadAi').disabled=false;}
+};
+$('aiStructure').onclick=async()=>{
+ if(!state.aiEngine||!state.rawText){alert('Load browser AI and extract text/OCR first.');return;}
+ $('aiStructure').disabled=true;$('ocrProgress').textContent='AI is structuring the extracted text…';
+ try{
+  const prompt=`You are an exam-paper parser. Extract only questions explicitly present in the source. Do not invent missing text, options, answer keys or explanations. Return ONLY valid JSON array. Each item: {"question":"...","options":["A text","B text","C text","D text"],"answer":"A/B/C/D or empty","explanation":"..."} If uncertain or incomplete, omit the item. Source text:\n${state.rawText.slice(0,18000)}`;
+  const r=await state.aiEngine.chat.completions.create({messages:[{role:'system',content:'Extract faithfully. Never guess. Output JSON only.'},{role:'user',content:prompt}],temperature:0.1,max_tokens:1800});
+  let s=r.choices[0].message.content.trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+  const arr=JSON.parse(s);state.detected=arr.map(q=>({text:q.question||'',options:(q.options||[]).slice(0,4).map((label,i)=>({label,key:'ABCD'[i]})),correct:/^[ABCD]$/i.test(q.answer||'')?'ABCD'.indexOf(q.answer.toUpperCase()):null,explanation:q.explanation||'',approved:false}));
+  showDetected(state.detected.map(q=>q.text+'\n'+q.options.map((o,i)=>'('+String.fromCharCode(65+i)+') '+o.label).join('\n')).join('\n\n'),true);
+  $('ocrProgress').textContent='AI extraction prepared candidate questions. Teacher approval is still required.';
+ }catch(e){$('ocrProgress').textContent='AI parsing failed or returned invalid JSON: '+e.message;}
+ finally{$('aiStructure').disabled=false;}
+};
+function renderResults(){const root=$('resultList');root.innerHTML='';if(!state.attempts.length){root.textContent='No student attempts yet.';return;}state.attempts.forEach(a=>{const d=document.createElement('div');d.className='question';d.textContent=a.title+' · Score '+a.score+'/'+a.total+' · '+a.date;root.append(d);});}
+function startQuiz(payload){state.activeQuiz=payload;state.qi=0;state.answers=Array(payload.questions.length).fill(null);state.locked=false;$('studentTitle').textContent=payload.title;$('studentInstructions').textContent=payload.instructions||'';$('finalScore').classList.add('hide');go('student');renderStudentQuestion();}
+function renderStudentQuestion(){const q=state.activeQuiz.questions[state.qi];if(!q){finishQuiz();return;}state.locked=state.answers[state.qi]!==null;$('qProgress').textContent='Question '+(state.qi+1);$('qCount').textContent='of '+state.activeQuiz.questions.length;const root=$('studentQuestion');root.innerHTML='';const p=document.createElement('h3');p.textContent=q.text;root.append(p);q.options.forEach((o,i)=>{const b=document.createElement('button');b.className='quizoption';b.textContent=String.fromCharCode(65+i)+'. '+o;if(state.answers[state.qi]!==null){if(i===q.correct)b.classList.add('correct');else if(i===state.answers[state.qi])b.classList.add('wrong');b.disabled=true;}b.onclick=()=>{if(state.answers[state.qi]!==null)return;state.answers[state.qi]=i;renderStudentQuestion();};root.append(b);});if(state.answers[state.qi]!==null){const f=document.createElement('div');f.className=state.answers[state.qi]===q.correct?'success':'notice';f.textContent=state.answers[state.qi]===q.correct?'Correct answer.':'Incorrect. Correct answer: '+String.fromCharCode(65+q.correct)+'. '+q.options[q.correct]+(q.explanation?' — '+q.explanation:'');root.append(f);} $('nextQuestion').disabled=state.answers[state.qi]===null;$('nextQuestion').textContent=state.qi===state.activeQuiz.questions.length-1?'Finish quiz':'Next question';}
+$('nextQuestion').onclick=()=>{if(state.answers[state.qi]===null)return;state.qi++;renderStudentQuestion();};
+function finishQuiz(){const correct=state.activeQuiz.questions.reduce((n,q,i)=>n+(state.answers[i]===q.correct?1:0),0);state.attempts.push({title:state.activeQuiz.title,score:correct,total:state.activeQuiz.questions.length,date:new Date().toLocaleString()});$('studentQuestion').innerHTML='';$('qProgress').textContent='Completed';$('qCount').textContent='';$('nextQuestion').disabled=true;$('finalScore').textContent='Demo result: '+correct+' / '+state.activeQuiz.questions.length+' correct.';$('finalScore').classList.remove('hide');updateStats();}
+$('exitQuiz').onclick=()=>go('dashboard');
+function loadQuizFromHash(){const m=location.hash.match(/^#quiz=(.+)$/);if(!m)return;try{const payload=fromBase64url(m[1]);if(!payload.questions?.length)throw Error('No questions');startQuiz(payload);}catch(e){alert('This demo quiz link is invalid or incomplete.');}}
+window.addEventListener('hashchange',loadQuizFromHash);loadQuizFromHash();updateStats();
+</script>
+</body></html>
